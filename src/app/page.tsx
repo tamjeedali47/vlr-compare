@@ -1,103 +1,57 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import type { Player } from "@/lib/types";
+import { SAMPLE_PLAYERS } from "@/lib/sampleData";
+import PlayerPanel from "@/components/PlayerPanel";
+import RadarCompare from "@/components/RadarCompare";
+import StatBars from "@/components/StatBars";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [playerA, setPlayerA] = useState<Player | null>(null);
+  const [playerB, setPlayerB] = useState<Player | null>(null);
+  const hasPlayer = playerA !== null || playerB !== null;
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  return (
+    <div className="mx-auto flex min-h-screen max-w-5xl flex-col gap-8 px-4 py-8 sm:px-6 sm:py-12">
+      <header className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
+            VLR <span className="text-player-a">Compare</span>
+          </h1>
+          <p className="mt-1 text-sm text-muted">
+            Put two pro Valorant players side by side and compare their stats.
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <span className="rounded-full border border-amber-400/60 bg-amber-400/10 px-3 py-1 text-xs font-medium text-amber-300">
+          Sample data · fictional players
+        </span>
+      </header>
+
+      <div className="flex flex-col items-stretch gap-4 sm:flex-row sm:gap-6">
+        <PlayerPanel side="a" players={SAMPLE_PLAYERS} player={playerA} onSelect={setPlayerA} />
+        <div className="flex items-center justify-center text-lg font-black text-muted sm:pt-6">
+          VS
+        </div>
+        <PlayerPanel side="b" players={SAMPLE_PLAYERS} player={playerB} onSelect={setPlayerB} />
+      </div>
+
+      {hasPlayer ? (
+        <div className="grid gap-6 lg:grid-cols-2">
+          <section className="rounded-xl border border-line bg-surface p-4">
+            <h2 className="mb-2 text-sm font-semibold">Overview</h2>
+            <RadarCompare a={playerA} b={playerB} />
+          </section>
+          <section className="rounded-xl border border-line bg-surface p-4">
+            <h2 className="mb-2 text-sm font-semibold">Head to head</h2>
+            <StatBars a={playerA} b={playerB} />
+          </section>
+        </div>
+      ) : (
+        <div className="flex h-40 items-center justify-center rounded-xl border-2 border-dashed border-line text-sm text-muted">
+          Pick players above to see the comparison
+        </div>
+      )}
     </div>
   );
 }
