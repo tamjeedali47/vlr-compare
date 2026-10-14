@@ -1,0 +1,54 @@
+name: Scrape VLR.gg
+
+on:
+  schedule:
+    - cron: "0 7 * * *" # daily, 07:00 UTC
+  workflow_dispatch:
+    inputs:
+      team:
+        description: "Only scrape this team slug (optional)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scrape
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run scraper
+        env:
+          TEAM: ${{ github.event.inputs.team }}
+        run: |
+          if [ -n "$TEAM" ]; then
+            npm run scrape -- --refresh-rosters --team "$TEAM"
+          else
+            npm run scrape -- --refresh-rosters
+          fi
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then
+            echo "No data changes."
+          else
+            git commit -m "Update VLR.gg data ($(date -u +%Y-%m-%d))"
+            git push
+          fi

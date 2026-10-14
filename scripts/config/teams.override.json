@@ -1,0 +1,5 @@
+{
+  "$comment": "Manual fixes for VCT team detection. 'add' entries are scraped even if no 2026 league event lists them; 'remove' takes team ids out. Example add entry: { \"id\": 1034, \"slug\": \"nrg\", \"region\": \"americas\" }",
+  "add": [],
+  "remove": []
+}
