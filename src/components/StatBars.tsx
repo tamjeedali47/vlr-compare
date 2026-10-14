@@ -86,13 +86,13 @@ function BarsTooltip({ active, payload, a, b }: TooltipProps) {
       {a && (
         <p style={{ color: SIDE_COLORS.a }}>
           {a.name}: {row.aText}
-          {row.win === "a" && " ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“"}
+          {row.win === "a" && " ✓"}
         </p>
       )}
       {b && (
         <p style={{ color: SIDE_COLORS.b }}>
           {b.name}: {row.bText}
-          {row.win === "b" && " ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“"}
+          {row.win === "b" && " ✓"}
         </p>
       )}
     </div>
