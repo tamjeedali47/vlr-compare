@@ -1,0 +1,18 @@
+# Keep the build context small and avoid leaking local state into images.
+node_modules
+.next
+out
+build
+coverage
+.git
+.gitignore
+.dockerignore
+Dockerfile
+compose.yaml
+*.md
+.env*
+!.env.example
+npm-debug.log*
+.vscode
+.idea
+.claude
